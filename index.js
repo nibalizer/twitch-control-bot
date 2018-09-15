@@ -46,7 +46,7 @@ app.delete('/ban', function(req, res){
 
 app.post('/unban', function(req, res){
   console.log("Un-Banning user: " + req.body.username);
-  client.ban(config.twitch_channels[0], req.body.username);
+  client.unban(config.twitch_channels[0], req.body.username);
   res.sendStatus(200);
 });
 
