@@ -7,6 +7,8 @@ var fs = require('fs');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
+var bodyParser = require('body-parser')
+app.use(bodyParser.json())
 
 
 // Set up options for connection to twitch chat
@@ -34,6 +36,18 @@ client.on('chat', function(channel, user, message, self) {
 
 app.get('/', function(req, res){
   res.send("Hello World");
+});
+
+app.delete('/ban', function(req, res){
+  console.log("Banning user: " + req.body.username);
+  client.ban(config.twitch_channels[0], req.body.username, "Banned By Moderator");
+  res.sendStatus(200);
+});
+
+app.post('/unban', function(req, res){
+  console.log("Un-Banning user: " + req.body.username);
+  client.ban(config.twitch_channels[0], req.body.username);
+  res.sendStatus(200);
 });
 
 
