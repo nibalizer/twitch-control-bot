@@ -7,8 +7,9 @@ var fs = require('fs');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-//var bodyParser = require('body-parser')
+var bodyParser = require('body-parser')
 //app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 
 // Set up options for connection to twitch chat
@@ -39,7 +40,8 @@ app.get(config.prefix + '/', function(req, res){
 });
 
 app.post(config.prefix + '/ban', function(req, res){
-  var username = req.query.text.split(' ')[0];
+  console.log(req.body);
+  var username = req.body.text.split(' ')[0];
   console.log("Banning user: " + username);
 
   client.ban(config.twitch_channels[0], username, "Banned By Moderator").then(function(data){
