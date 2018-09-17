@@ -72,9 +72,35 @@ app.post(config.prefix + '/ban', function(req, res){
 });
 
 app.post(config.prefix + '/unban', function(req, res){
-  console.log("Un-Banning user: " + req.body.username);
-  client.unban(config.twitch_channels[0], req.body.username);
-  res.sendStatus(200);
+  console.log(req.body);
+  var username = req.body.text.split(' ')[0];
+  console.log("unbanning user: " + username);
+
+  client.unban(config.twitch_channels[0], username).then(function(data){
+    console.log(data);
+    var result = {
+      "response_type": "in_channel",
+      "text": "Unbanned User: " + username,
+      "attachments": [
+        {
+        "text":"Bot Still in Development - talk to @nibalizer"
+        }
+      ]
+    }
+    res.json(result);
+  }).catch(function(err) {
+    console.log(err);
+    var result = {
+      "response_type": "in_channel",
+      "text": "Unban failed: " + username,
+      "attachments": [
+        {
+        "text":"Bot Still in Development - talk to @nibalizer"
+        }
+      ]
+    }
+    res.json(result); // slack requires you send a 200 on error
+  });
 });
 
 
