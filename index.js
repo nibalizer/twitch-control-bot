@@ -7,8 +7,8 @@ var fs = require('fs');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var bodyParser = require('body-parser')
-app.use(bodyParser.json())
+//var bodyParser = require('body-parser')
+//app.use(bodyParser.json())
 
 
 // Set up options for connection to twitch chat
@@ -38,10 +38,35 @@ app.get(config.prefix + '/', function(req, res){
   res.send("Hello World");
 });
 
-app.delete(config.prefix + '/ban', function(req, res){
-  console.log("Banning user: " + req.body.username);
-  client.ban(config.twitch_channels[0], req.body.username, "Banned By Moderator");
-  res.sendStatus(200);
+app.post(config.prefix + '/ban', function(req, res){
+  var username = req.query.text.split(' ')[0];
+  console.log("Banning user: " + username);
+
+  client.ban(config.twitch_channels[0], username, "Banned By Moderator").then(function(data){
+    console.log(data);
+    var result = {
+      "response_type": "in_channel",
+      "text": "Banned User: " + username,
+      "attachments": [
+        {
+        "text":"Bot Still in Development - talk to @nibalizer"
+        }
+      ]
+    }
+    res.json(result);
+  }).catch(function(err) {
+    console.log(err);
+    var result = {
+      "response_type": "in_channel",
+      "text": "Ban failed: " + username,
+      "attachments": [
+        {
+        "text":"Bot Still in Development - talk to @nibalizer"
+        }
+      ]
+    }
+    res.json(result); // slack requires you send a 200 on error
+  });
 });
 
 app.post(config.prefix + '/unban', function(req, res){
