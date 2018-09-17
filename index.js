@@ -34,17 +34,17 @@ client.on('chat', function(channel, user, message, self) {
   console.log(message);
 });
 
-app.get('/', function(req, res){
+app.get(config.prefix + '/', function(req, res){
   res.send("Hello World");
 });
 
-app.delete('/ban', function(req, res){
+app.delete(config.prefix + '/ban', function(req, res){
   console.log("Banning user: " + req.body.username);
   client.ban(config.twitch_channels[0], req.body.username, "Banned By Moderator");
   res.sendStatus(200);
 });
 
-app.post('/unban', function(req, res){
+app.post(config.prefix + '/unban', function(req, res){
   console.log("Un-Banning user: " + req.body.username);
   client.unban(config.twitch_channels[0], req.body.username);
   res.sendStatus(200);
